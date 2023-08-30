@@ -14,10 +14,6 @@ app.listen(Number(process.env.PORT) || 3003, () => {
   console.log(`Servidor rodando na porta ${Number(process.env.PORT) || 3003}`)
 });
 
-app.get("/ping", (req, res) => {
-  res.send("pong!")
-});
-
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
 app.use("/posts", commentRouter);
