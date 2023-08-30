@@ -18,30 +18,40 @@ export class UserBusiness {
     ) { }
 
     public signup = async (input: SignupInputDTO): Promise<SignupOutputDTO> => {
+
         const { nickname, email, password } = input
+        
         const userExists = await this.userDatabase.findByEmail(email)
+    
         if (userExists) {
-            throw new ConflictError("Email já cadastrado")
+          throw new ConflictError("Email já cadastrado")
         }
+    
         const id = this.idGenerator.generate()
         const hashedPassword = await this.hashManager.hash(password)
+    
         const user = new User(
-            id,
-            nickname,
-            email,
-            hashedPassword
+          id,
+          nickname,
+          email,
+          hashedPassword
         )
+    
         await this.userDatabase.insertUser(user.toDBModel())
+    
         const payload: TokenPayload = {
-            id: user.getId(),
-            nickname: user.getNickname()
+          id: user.getId(),
+          nickname: user.getNickname()
         }
+    
         const token = this.tokenManager.createToken(payload)
+    
         const output: SignupOutputDTO = {
-            token: token
+          token: token
         }
+    
         return output
-    };
+      };
 
     public login = async (input: LoginInputDTO): Promise<LoginOutputDTO> => {
         const { email, password } = input
